@@ -1,5 +1,7 @@
+utils=../utils/utils.cu
+
 matrix_multiplication:
-	nvcc matrix_multiplication.cu -o matrix_multiplication.exe
+	nvcc matrix_multiplication.cu $(utils) -o matrix_multiplication.exe
 	./matrix_multiplication.exe
 
 sum_matrix:
@@ -22,4 +24,4 @@ tmp:
 	./tmp.exe
 
 clean:
-	rm *.exe
+	if [ -e *.exe ]; then rm *.exe; fi

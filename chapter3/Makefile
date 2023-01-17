@@ -26,4 +26,4 @@ time.o: ../utils/time.c ../utils/time.h
 
 
 clean:
-	rm *.exe
+	if [ -e *.exe ]; then rm *.exe; fi

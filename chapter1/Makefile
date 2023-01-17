@@ -3,4 +3,4 @@ target:
 	nvcc hello.cu -arch sm_61 -o hello.exe
 
 clean:
-	rm *.exe
+	if [ -e *.exe ]; then rm *.exe; fi

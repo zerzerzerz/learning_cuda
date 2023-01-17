@@ -1,21 +1,4 @@
-#include <stdio.h>
-#include <cuda_runtime.h>
-#include <sys/time.h>
-#include <stdlib.h>
-
-
-double get_time(){
-    struct timeval current_time;
-    gettimeofday(&current_time, NULL);
-    return ((double)current_time.tv_sec + (double)current_time.tv_usec * 1e-6);
-}
-
-
-void init(int *A, int n_A){
-    for(int i=0; i<n_A; ++i){
-        A[i] = rand();
-    }
-}
+#include "../utils/utils.cuh"
 
 // mm means matrix multiplication
 void mm(int *A, int *B, int *C, int row_A, int col_A, int col_B){
