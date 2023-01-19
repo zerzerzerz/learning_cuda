@@ -97,3 +97,7 @@
 - `gld_throughput` 查看global load throughput，是个速率，memory read速率（g表示global，ld表示load）
 - `gld_efficiency` ratio of requested global load throughput to required global load throughput
 - `stall_sync`查看空转的warps
+
+## 数组规模
+- 如果数组的大小不是2的次幂，也没有关系，因为设置block的时候，可以设置block的规模是2的次幂
+- 这样就能保证每个block处理相对简单的情况

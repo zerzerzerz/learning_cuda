@@ -1,5 +1,9 @@
 utils=../utils/utils.cu
 
+sum: sum.cu $(utils)
+	nvcc $^ -o $@.exe
+	./$@.exe
+
 sum_1d_array_dynamic_parallelism:
 	nvcc sum_1d_array_dynamic_parallelism.cu $(utils) -arch=sm_35 -rdc=true -lcudadevrt -o sum_1d_array_dynamic_parallelism.exe  
 	./sum_1d_array_dynamic_parallelism.exe
