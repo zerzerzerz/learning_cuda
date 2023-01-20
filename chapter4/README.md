@@ -30,7 +30,7 @@
 - 和L1 cache很像，但是可编程
 - 同一个block内的线程都可以访问
 - 访问shared需要线程间同步`void __syncthreads();`
-- 可以设置L1 cache和shared memory之间的分配关系
+- **可以设置L1 cache和shared memory之间的分配关系**
 
 ## Constant Memory
 - read-only
