@@ -3,4 +3,4 @@ main.exe: main.cu utils.cu
 
 .PHONY: clean
 clean:
-	if [ -e *.exe ]; then rm *.exe; fi
+	if ls *.exe > /dev/null 2>&1; then rm *.exe; fi

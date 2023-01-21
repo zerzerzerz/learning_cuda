@@ -2,7 +2,7 @@
 
 int main(int argc, char** argv){
     int *a, *b, *res_cpu, *res_gpu, *res2_gpu;
-    int row = 1024;
+    int row = 512;
     int num_elem = row * row;
     int bytes = num_elem * sizeof(int);
     int block_size_x = 16, block_size_y = 16;

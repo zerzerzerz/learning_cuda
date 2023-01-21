@@ -25,4 +25,4 @@ static_declard_global_variable: static_declard_global_variable.cu $(utils)
 .PHONY: clean
 
 clean:
-	if [ -f *.exe ]; then rm *.exe; fi
+	if ls *.exe > /dev/null 2>&1; then rm *.exe; fi

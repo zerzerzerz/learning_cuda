@@ -30,4 +30,4 @@ time.o: ../utils/time.c ../utils/time.h
 
 
 clean:
-	if [ -e *.exe ]; then rm *.exe; fi
+	if ls *.exe > /dev/null 2>&1; then rm *.exe; fi
