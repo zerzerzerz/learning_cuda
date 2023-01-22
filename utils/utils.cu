@@ -20,6 +20,7 @@ int sum(int *data, int size){
 void init(int *data, int size){
     for(int i=0; i<size; ++i){
         data[i] = rand() % 10;
+        // data[i] = i;
     }
     return;
 }
@@ -50,8 +51,8 @@ int my_div(int x, int y){
 // mm means matrix multiplication
 void mm_host(int *A, int *B, int *C, int row_A, int col_A, int col_B){
     int sum, a, b;
-    int row_B = col_A;
-    int row_C = row_A;
+    // int row_B = col_A;
+    // int row_C = row_A;
     int col_C = col_B;
 
     for(int i=0; i<row_A; ++i){
@@ -71,7 +72,7 @@ void mm_host(int *A, int *B, int *C, int row_A, int col_A, int col_B){
 __global__ void mm2_device(int *A, int *B, int *C, int row_A, int col_A, int col_B){
     // interpret x as outer index
     // slower
-    int row_B = col_A;
+    // int row_B = col_A;
     int row_C = row_A;
     int col_C = col_B;
 
@@ -95,7 +96,7 @@ __global__ void mm2_device(int *A, int *B, int *C, int row_A, int col_A, int col
 __global__ void mm_device(int *A, int *B, int *C, int row_A, int col_A, int col_B){
     // interpret x as inner index
     // faster
-    int row_B = col_A;
+    // int row_B = col_A;
     int row_C = row_A;
     int col_C = col_B;
 
