@@ -53,3 +53,8 @@
 - Read-only texture
 - cache都是不可编程的，memory load可以被cached，但是memory store不能被cached
 - L2 cache只有1个，被SM共享，其他cache都是每个SM一个
+
+## 所属关系
+- register和Local memory都是线程所属，只有本线程才能访问
+- shared memory是block内全部线程共享的
+- global，constant，texture都是全部线程+host可以访问的
