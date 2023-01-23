@@ -58,3 +58,14 @@
 - register和Local memory都是线程所属，只有本线程才能访问
 - shared memory是block内全部线程共享的
 - global，constant，texture都是全部线程+host可以访问的
+
+## Aligned and Coalesced
+### Aligned
+- when the first address of a device memory transaction is an even multiple of the cache granularity being used to service the transaction (either 32 bytes for L2 cache or 128 bytes for L1 cache)
+- 一次内存事务的首地址，如果是cache粒度的偶数倍，就称为对齐
+- 对于L2 cache，缓存粒度是32bytes
+- 对于L1 cache，缓存粒度是128bytes
+
+### Coalesced
+- when all 32 threads in a warp access a contiguous chunk of memory
+- 1个warp里面的线程访问连续的一块内存
