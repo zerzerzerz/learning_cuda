@@ -19,7 +19,7 @@ int sum(int *data, int size){
 
 void init(int *data, int size){
     for(int i=0; i<size; ++i){
-        data[i] = rand() % 10;
+        data[i] = (rand() % 10) + 1;
         // data[i] = i;
     }
     return;
@@ -127,4 +127,15 @@ __global__ void add_device(int *a, int *b, int *c, int size){
     }
 
     return;
+}
+
+
+void display_2d(const int* a, int nrow, int ncol){
+    for(int i=0; i<nrow; ++i){
+        for(int j=0; j<ncol; ++j){
+            printf("%d ", a[i*ncol+j]);
+        }
+        printf("\n");
+    }
+    printf("\n");
 }

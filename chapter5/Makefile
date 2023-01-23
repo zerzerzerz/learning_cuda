@@ -1,5 +1,9 @@
 utils = ../utils/utils.cu
 
+transpose: transpose.cu $(utils)
+	nvcc $^ -o $@.exe
+	./$@.exe
+
 reduce_global_memory: reduce_global_memory.cu $(utils)
 	nvcc $^ -o $@.exe
 	./$@.exe
