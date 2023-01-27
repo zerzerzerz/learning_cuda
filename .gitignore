@@ -2,3 +2,4 @@
 *.o
 .vscode/
 Professional-CUDA-C-Programming-master.zip
+tmp/
