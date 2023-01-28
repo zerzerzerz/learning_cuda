@@ -63,7 +63,7 @@ int main(){
     e = get_time();
     printf("gpu: %f sec\n", e-s);
 
-    cudaMemcpy(C_cpu_from_gpu, C_gpu, bytes_C, cudaMemcpyDeviceToHost);
+    CHECK(cudaMemcpy(C_cpu_from_gpu, C_gpu, bytes_C, cudaMemcpyDeviceToHost));
     
     printf("%d\n", is_same(C, C_cpu_from_gpu, n_C));
 
