@@ -1,5 +1,10 @@
 utils = ../utils/utils.cu
+gpu_device = 1
 
+uva2: uva2.cu
+	export CUDA_VISIBLE_DEVICES=$(gpu_device); \
+	nvcc $^ -o $@.exe; \
+	./$@.exe
 
 unified_memory2: unified_memory2.cu $(utils)
 	nvcc $^ -o $@.exe
