@@ -45,6 +45,23 @@
 ### Global Memory
 - 通常是使用`cudaMalloc`动态分配
 - 也可以静态分配，使用修饰符`__device__`
+```c
+// 这里相当于直接声明了一个device上的变量
+// 当然也可以声明数组
+__device__ int symbol;
+int var_h = 1;
+
+// 要注意传递的参数没有&，可以理解为传递了reference
+// 更主要的是，在host上不能通过&来获取device variable的地址
+cudaMemcpyToSymbol(symbol, &var_h, sizeof(int));
+cudaMemcpyFromSymbol(&var_h, symbol, sizeof(int));
+
+// 如果真的想获得symbol的地址，需要用下面这个函数
+// 之后就可以使用cudaMemcpy来传递了
+int* pointer;
+cudaGetSymbolAddress(&pointer, symbol);
+```
+
 
 
 ## GPU Caches
@@ -77,3 +94,43 @@
 |constant|off|Yes|RW|ALL threads|Application|
 |texture|off|Yes|RW|ALL threads|Application|
 
+### Pinned Memory
+- host memory默认是可分页的，可能存储在硬盘上（虚拟内存）
+- 对于gpu来说，从可分页的host memory复制数据不安全，因此cuda driver首先创建临时的pinned host memory，将src host data先复制到这里，然后再从pinned memory复制到device memory上
+- 可以使用`cudaMallocHost`直接创建host pinned memory，切记使用`cudaFreeHost`来释放
+
+
+### Zero-Copy Memory
+- host和device都可以直接访问这块内存
+- device memory不足的时候可以用一下
+- 使用`cudaHostAlloc`来创建，这个函数有个flag需要设置
+  - `cudaHostAllocDefault` 在host上创建普通的pinned memory
+  - `cudaHostAllocPortable` 可以在多个device上使用
+  - `cudaHostAllocWriteCombined` 适合host写，device读
+  - `cudaHostAllocMapped` 这个就是zero-copy memory，在host上创建一块内存，然后映射到device address space上
+- 必须使用`cudaFreeHost`进行释放
+- 很慢，因为每次内存事务都需要走PCIe bus
+- 传给kernel的时候，不能直接把host上的指针传进去，需要使用`cudaHostGetDevicePointer`拿到映射到device memory之后的地址再传
+
+
+### Unified Virtual Addressing (UVA)
+- host memory和device memory共享同一个虚拟地址空间
+- 好处就是，创建的zero-copy host memory，host pointer可以直接传递给kernel/device，不需要先把host pointer传给device pointer了
+
+
+### Unified Memory
+- UM创建一个受管理的内存池(create a pool of managed memory)，每次从这个pool中分配的内存，对host和device都是accessible，有着相同的address/pointer
+- UM在统一的内存空间中，自动在host和device中间迁移数据
+- 静态声明的话，比如`__device__ __managed__ int var;` 必须全局声明，host和device都可以获取
+- 使用`cudaMallocManaged`动态分配
+
+
+## CUDA Runtime API
+- `cudaError_t cudaMalloc(void **devPtr, size_t count);` 分配global memory
+- `cudaError_t cudaMemset(void *devPtr, int value, size_t count);` 填充
+- `cudaError_t cudaFree(void *devPtr);` 释放显存
+- `cudaError_t cudaMemcpy(void *dst, const void *src, size_t count, enum cudaMemcpyKind kind);` 在host和device之间传递数据
+- `__host__​cudaError_t cudaMemcpyToSymbol ( const void* symbol, const void* src, size_t count, size_t offset = 0, cudaMemcpyKind kind = cudaMemcpyHostToDevice );` 把host上的变量/数组copy到symbol，要注意symbol其实是个引用，这里不能用&，因为不能在host上用&来获取device上变量的地址
+- `__host__​cudaError_t cudaMemcpyFromSymbol ( void* dst, const T& symbol, size_t count, size_t offset = 0, cudaMemcpyKind kind = cudaMemcpyDeviceToHost );` 类似的，从device上的symbol复制到host
+- `__host__​cudaError_t cudaGetSymbolAddress ( void** devPtr, const void* symbol );` 获取一个symbol的地址，然后就可以用`cudaMemcpy`的函数来操作了
+- `cudaError_t cudaMallocHost(void **devPtr, size_t count);` 在host上创建pinned memory，仍然需要copy到device memory上才能使用，需要使用`cudaFreeHost`来释放host pinned memory
