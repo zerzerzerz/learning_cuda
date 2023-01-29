@@ -9,7 +9,7 @@
 double get_time();
 int sum(int*, int);
 void init(int*, int);
-int is_same(int*, int*, int);
+int is_same(const int*,const int*, int num_elem);
 void add_host(int*, int*, int*, int);
 __global__ void add_device(int*, int*, int*, int);
 int my_div(int, int);

@@ -26,7 +26,7 @@ void init(int *data, int size){
 }
 
 
-int is_same(int *a, int *b, int size){
+int is_same(const int *a, const int *b, const int size){
     // check whether two arrays are the same
     for(int i=0; i<size; ++i){
         if(a[i] != b[i]) return 0;

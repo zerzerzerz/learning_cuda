@@ -1,6 +1,11 @@
 utils = ../utils/utils.cu
 gpu_device = 1
 
+transpose: transpose.cu $(utils)
+	nvcc $^ -o $@.exe
+	export CUDA_VISIBLE_DEVICES=$(gpu_device); \
+	./$@.exe
+
 unified_memory3: unified_memory3.cu $(utils)
 	nvcc $^ -o $@.exe
 	./$@.exe
