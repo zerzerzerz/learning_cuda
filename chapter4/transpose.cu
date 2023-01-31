@@ -1,7 +1,7 @@
 #include "../utils/utils.cuh"
 
-const int nx = 16;
-const int ny = 64;
+const int nx = 32;
+const int ny = 128;
 const int block_x = 8;
 const int block_y = 32;
 typedef void (*Kernel)(const int* idata, int *odata, const int nx, const int ny);

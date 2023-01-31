@@ -8,13 +8,13 @@
 
 double get_time();
 int sum(int*, int);
-void init(int*, int);
+void init(int* data, const int n_elem);
 int is_same(const int*,const int*, int num_elem);
 void add_host(int*, int*, int*, int);
 __global__ void add_device(int*, int*, int*, int);
 int my_div(int, int);
 void mm_host(int*, int*, int*, int, int, int);
-void display_2d(const int*, int nrow, int ncol);
+void display_2d(const int*, const int nrow, const int ncol);
 __global__ void mm_device(int*, int*, int*, int, int, int);
 __global__ void mm2_device(int*, int*, int*, int, int, int);
 
