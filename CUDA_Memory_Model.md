@@ -125,6 +125,24 @@ cudaGetSymbolAddress(&pointer, symbol);
 - 使用`cudaMallocManaged`动态分配
 
 
+### Glonal Memory Read
+- 有三条路径
+  - L1/L2 cache
+  - constant cache
+  - read-only cache
+- L1/L2 cache
+  - L1 cache 128 bytes cache line
+  - L2 cache 32 bytes cache line
+- Read-Only Cache
+  - 读取的时候使用`__lgd`函数
+  - 或者传递参数的时候直接加上`const __restrict__`
+
+
+### Global Memory Write
+- 没有L1 cache参与，只有L2 cache，访问粒度是32 bytes
+- 一次可以做1/2/4哥segment
+
+
 ## CUDA Runtime API
 - `cudaError_t cudaMalloc(void **devPtr, size_t count);` 分配global memory
 - `cudaError_t cudaMemset(void *devPtr, int value, size_t count);` 填充
