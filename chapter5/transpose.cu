@@ -1,7 +1,7 @@
 #include "../utils/utils.cuh"
 
 const int block_size_x = 16;
-const int block_size_y = 32;
+const int block_size_y = 16;
 const int padding = 1;
 const int unrolling = 4;
 
@@ -33,13 +33,12 @@ __global__ void transpose_col(const int* idata, int* odata, const int n_row, con
     int x = blockIdx.x * blockDim.x + threadIdx.x;
     int y = blockIdx.y * blockDim.y + threadIdx.y;
     int tid = y * n_col + x;
-    if(x < n_col && y < n_row){
-        int dst = tid;
-        y = tid / n_row;
-        x = tid % n_row;
-        int src = x * n_col + y;
-        odata[dst] = idata[src];
-    }
+    int dst = tid;
+    y = tid / n_row;
+    x = tid % n_row;
+    int src = x * n_col + y;
+
+    if(x<n_row && y<n_col) odata[dst] = idata[src];
 }
 
 
@@ -55,15 +54,14 @@ __global__ void transpose_smem(const int* idata, int* odata, const int n_row, co
 
     __syncthreads();
 
-    if(x < n_col && y < n_row){
-        int bid = threadIdx.y * blockDim.x + threadIdx.x;
-        int row = bid / blockDim.y;
-        int col = bid % blockDim.y;
-        x = blockDim.y * blockIdx.y + col;
-        y = blockDim.x * blockIdx.x + row;
-        int dst = y * n_row + x;
-        odata[dst] = smem[col][row];
-    }
+    int bid = threadIdx.y * blockDim.x + threadIdx.x;
+    int row = bid / blockDim.y;
+    int col = bid % blockDim.y;
+    x = blockDim.y * blockIdx.y + col;
+    y = blockDim.x * blockIdx.x + row;
+    int dst = y * n_row + x;
+
+    if(x<n_row && y<n_col) odata[dst] = smem[col][row];
 }
 
 
@@ -79,15 +77,14 @@ __global__ void transpose_smem_padding(const int* idata, int* odata, const int n
 
     __syncthreads();
 
-    if(x < n_col && y < n_row){
-        int bid = threadIdx.y * blockDim.x + threadIdx.x;
-        int row = bid / blockDim.y;
-        int col = bid % blockDim.y;
-        x = blockDim.y * blockIdx.y + col;
-        y = blockDim.x * blockIdx.x + row;
-        int dst = y * n_row + x;
-        odata[dst] = smem[col][row];
-    }
+    int bid = threadIdx.y * blockDim.x + threadIdx.x;
+    int row = bid / blockDim.y;
+    int col = bid % blockDim.y;
+    x = blockDim.y * blockIdx.y + col;
+    y = blockDim.x * blockIdx.x + row;
+    int dst = y * n_row + x;
+
+    if(x<n_row && y<n_col) odata[dst] = smem[col][row];
 }
 
 
@@ -98,14 +95,12 @@ __global__ void transpose_col_unroll(const int* idata, int* odata, const int n_r
     #pragma unroll 4
     for(int i=0; i<unrolling; ++i){
         x += blockDim.x;
-        if(x < n_col && y < n_row){
-            int tid = y * n_col + x;
-            int dst = tid;
-            int y_T = tid / n_row;
-            int x_T = tid % n_row;
-            int src = x_T * n_col + y_T;
-            odata[dst] = idata[src];
-        }
+        int tid = y * n_col + x;
+        int dst = tid;
+        int y_T = tid / n_row;
+        int x_T = tid % n_row;
+        int src = x_T * n_col + y_T;
+        if(x_T < n_row && y_T < n_col) odata[dst] = idata[src];
     }
     
 }
@@ -125,20 +120,16 @@ __global__ void transpose_col_unroll_smem(const int* idata, int* odata, const in
     }
     __syncthreads();
 
+    int bid = threadIdx.x + threadIdx.y * blockDim.x;
+    int row = bid / block_size_y;
+    int col = bid % block_size_y;
+
     #pragma unroll 4
     for(int i=0; i<unrolling; ++i){
-        int x = unrolling * blockIdx.x * blockDim.x + threadIdx.x + i*blockDim.x;
-        int y = blockIdx.y * blockDim.y + threadIdx.y;
-
-        if(x<n_col && y<n_row){
-            int bid = threadIdx.x + threadIdx.y * blockDim.x;
-            int row = bid / block_size_y;
-            int col = bid % block_size_y;
-            x = blockIdx.y * blockDim.y + col;
-            y = unrolling * blockIdx.x * blockDim.x + row + i*blockDim.x;
-            int dst = y * n_row + x;
-            odata[dst] = smem[col][row+i*blockDim.x];
-        }
+        int x = blockIdx.y * blockDim.y + col;
+        int y = unrolling * blockIdx.x * blockDim.x + row + i*blockDim.x;
+        int dst = y * n_row + x;
+        if(x<n_row && y<n_col) odata[dst] = smem[col][row+i*blockDim.x];
     }
 }
 
@@ -165,6 +156,9 @@ void run(Kernel k, const int* idata, int* odata, const int n_row, const int n_co
 
 
 int main(){
+    // int n_row = 1087;
+    // int n_col = 2017;
+
     int n_row = 1024;
     int n_col = 2048;
     

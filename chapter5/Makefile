@@ -2,8 +2,8 @@ utils = ../utils/utils.cu
 CUDA_VISIBLE_DEVICES=1
 
 transpose: transpose.cu $(utils)
+	nvcc $^ -o $@.exe
 	export CUDA_VISIBLE_DEVICES=$(CUDA_VISIBLE_DEVICES); \
-	nvcc $^ -o $@.exe; \
 	./$@.exe
 
 reduce_global_memory: reduce_global_memory.cu $(utils)
