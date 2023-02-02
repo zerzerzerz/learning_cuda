@@ -165,6 +165,8 @@ int main(){
     int n_elem = n_row * n_col;
     int n_byte = n_elem * sizeof(int);
 
+    check_device(0);
+
     int *idata, *odata_cpu, *odata_gpu;
     CHECK(cudaMallocManaged(&idata, n_byte));
     CHECK(cudaMallocManaged(&odata_cpu, n_byte));

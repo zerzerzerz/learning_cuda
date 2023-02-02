@@ -135,6 +135,7 @@ cudaGetSymbolAddress(&pointer, symbol);
   - L2 cache 32 bytes cache line
 - Read-Only Cache
   - 读取的时候使用`__lgd`函数
+  - 从帕斯卡架构是`sm_60`
   - 或者传递参数的时候直接加上`const __restrict__`
 
 

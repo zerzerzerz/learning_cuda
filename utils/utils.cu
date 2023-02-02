@@ -139,3 +139,12 @@ void display_2d(const int* a, int nrow, int ncol){
     }
     printf("\n");
 }
+
+void check_device(const int device){
+    cudaDeviceProp p;
+    cudaGetDeviceProperties(&p, device);
+    printf("Name = %s\n", p.name);
+    printf("Compute Capability = %d.%d\n", p.major, p.minor);
+    printf("Global Memory = %g GB\n", p.totalGlobalMem / (1024.0 * 1024 * 1024));
+    return;
+}
