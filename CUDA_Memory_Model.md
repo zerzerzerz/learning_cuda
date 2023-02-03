@@ -123,6 +123,8 @@ cudaGetSymbolAddress(&pointer, symbol);
 - UM在统一的内存空间中，自动在host和device中间迁移数据
 - 静态声明的话，比如`__device__ __managed__ int var;` 必须全局声明，host和device都可以获取
 - 使用`cudaMallocManaged`动态分配
+- 申请超量显存
+  - 要求GPU架构不低于Pascal架构
 
 
 ### Glonal Memory Read

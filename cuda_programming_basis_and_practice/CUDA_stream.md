@@ -1,0 +1,16 @@
+# CUDA Stream
+- stream考虑的就是kernel外部的并行，主要包含
+  - kernel计算-数据传输
+  - host计算-数据传输
+  - 数据传输-数据传输
+  - kernel计算-host计算
+  - 不同kernel计算
+- 异步数据传输
+  - `cudaMemcpyAsync()`
+  - 由GPU的DMA直接实现，不需要host的参与
+  - 需要将host memory定义为pinned memory
+    - OS在程序运行期间，有权改变程序使用的pagable memory的物理地址
+    - pinned memory在使用期间，物理地址保持不变
+    - `nvcc -arch=sm_75 -O3 -DUNIFIED XXX.cu`
+    - 可以申请超量的device memory（甚至allocate的时候可以超过GPU+CPU memory上限）
+    - 这是因为`cudaMallocManaged()`成功调用之后，只代表成功预定了一段地址空间，统一内存的实际分配发生在host或者device第一次访问预留的内存
